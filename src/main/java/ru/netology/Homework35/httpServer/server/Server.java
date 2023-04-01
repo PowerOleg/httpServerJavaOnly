@@ -24,6 +24,33 @@ public class Server {
         this.validPaths = validPaths;
     }
 
+
+
+    public void addHandler() {
+
+    }
+
+    public void listen() {
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public void start() {
         try (final var serverSocket = new ServerSocket(9999)) {
             System.out.println("The server has been started");
