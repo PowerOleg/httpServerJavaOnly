@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -13,22 +14,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static ru.netology.Homework35.httpServer.Main.THREADS_NUMBER;
-
+//как будем закрывать потоки?
 public class Server {
     final List<String> validPaths;
     final ExecutorService threadPool = Executors.newFixedThreadPool(64);
 
     public Server(List<String> validPaths) {
         this.validPaths = validPaths;
-        ThreadGroup group = new ThreadGroup("serverThreadGroup1");
-        Thread[] threads = new Thread[THREADS_NUMBER];
 
-        for (int i = 0; i < THREADS_NUMBER; i++) {
-            threads[i] = new Thread(group, this::handle, "thread"+i);
-        }
-//        for (int i = 0; i < THREADS_NUMBER; i++) {
-//            threadPool.execute(threads[i]);
-//        }
 
 
 
@@ -43,15 +36,61 @@ public class Server {
 
         try(final var serverSocket = new ServerSocket(9999)) {
             System.out.println("The server has been started");
-            while (true) {
+
+
+
+
+
+            ThreadGroup group = new ThreadGroup("serverThreadGroup1");
+            Thread[] threads = new Thread[THREADS_NUMBER];
+
+            for (int i = 0; i < THREADS_NUMBER; i++) {
+                threads[i] = new Thread(group, () -> this.handle(serverSocket), "thread"+i);
+
+            }
+            for (int i = 0; i < THREADS_NUMBER; i++) {
+                threadPool.execute(threads[i]);
+                System.out.println("thread "+i + " run");
+            }
+
+
+
+
+
+//currentThread - {Thread@1}"Thread[main,5,main]
+            Thread.currentThread().join();
+            threadPool.shutdown();
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+
+
+
+
+
+    public void handle(ServerSocket serverSocket) {
+
+        while (true) {
+
+
+
+
+
+
                 try (final var socket = serverSocket.accept();
                      final var in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                      final var out = new BufferedOutputStream(socket.getOutputStream());
                 ) {
+
+
                     final var requestLine = in.readLine();
                     final var parts = requestLine.split(" ");
                     if (parts.length != 3) {
-                        continue;
+                        return;
                     }
 
                     final var path = parts[1];
@@ -62,7 +101,7 @@ public class Server {
                                         "Connection: close\r\n" +
                                         "\r\n").getBytes());
                         out.flush();
-                        continue;
+                        return;
                     }
 
 
@@ -82,9 +121,8 @@ public class Server {
                                 "\r\n").getBytes());
                         out.write(content.getBytes());
                         out.flush();
-                        continue;
+                        return;
                     }
-
 
 
                     out.write(("HTTP/1.1 200 OK\r\n" +
@@ -95,18 +133,25 @@ public class Server {
                     Files.copy(filePath, out);
                     out.flush();
 
-
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
+
+
+
+
+
+
+
+
+
+
+
+
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
 
-    }
 
-    public void handle() {
-
-    }
 
 
 }
