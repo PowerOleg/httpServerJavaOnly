@@ -6,7 +6,6 @@ import ru.netology.Homework35.httpServer.server.handlers.Handler;
 import ru.netology.Homework35.httpServer.server.Server;
 
 import java.io.BufferedOutputStream;
-import java.net.http.HttpHeaders;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,23 +33,34 @@ public class Main {
 
 
 
-        // добавление хендлеров (обработчиков)
-//        server.addHandler("GET", "/messages", new Handler() {
-//            public void handle(Request request, BufferedOutputStream responseStream) {
-//                // TODO: handlers code
-////                BufferedOutputStream берётся путём заворачивания OutputStream socket:
-////                new BufferedOutputStream(socket.getOutputStream()).
-//                responseStream.write(" \r\n");
+
+
+
+
+
+
+
+//         добавление хендлеров (обработчиков)
+        //                BufferedOutputStream берётся путём заворачивания OutputStream socket:
+//                new BufferedOutputStream(socket.getOutputStream()).
+        server.addHandler("GET", "/messages", new Handler() {
+            public void handle(Request request, BufferedOutputStream responseStream) {
+                // TODO: handlers code
+//                Connection connection = (Connection) request.getServletContext().getAttribute("dbConnection");
+
+//                ?????????request.read();
+
+//                response.setContentType("text/html");
+//                responseStream.write("a\r\n");
 //                responseStream.flush();
-//
-//            }
-//        });
-//        server.addHandler("POST", "/messages", new Handler() {
-//            public void handle(Request request, BufferedOutputStream responseStream) {
-//                // TODO: handlers code
-//            }
-//        });
-//
-//        server.listen(9999);
+            }
+        });
+        server.addHandler("POST", "/messages", new Handler() {
+            public void handle(Request request, BufferedOutputStream responseStream) {
+                // TODO: handlers code
+            }
+        });
+
+        server.listen(9999);
     }
 }

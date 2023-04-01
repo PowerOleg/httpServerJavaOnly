@@ -1,5 +1,7 @@
 package ru.netology.Homework35.httpServer.server;
 
+import ru.netology.Homework35.httpServer.server.handlers.Handler;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,6 +12,8 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
@@ -17,23 +21,26 @@ import java.util.stream.IntStream;
 import static ru.netology.Homework35.httpServer.Main.THREADS_NUMBER;
 
 public class Server {
-    final List<String> validPaths;
+    ConcurrentMap<String, String> requestMethodType = new ConcurrentHashMap<>();                    //1
+    ConcurrentMap<String, String> requestPath = new ConcurrentHashMap<>();                          //1
+    int port = 8080;
+    final List<String> validPaths;                                                                  //d
     final ExecutorService threadPool = Executors.newFixedThreadPool(64);
 
     public Server(List<String> validPaths) {
         this.validPaths = validPaths;
-    }
+    }                       //d
 
 
 
-    public void addHandler() {
-
-    }
-
-    public void listen() {
+    public void addHandler(String requestMethod, String uri, Handler handler) {                    //1
 
     }
 
+    public String findHandler() {                                                                      //1
+
+        return "Not Found 404";
+    }
 
 
 
@@ -52,7 +59,7 @@ public class Server {
 
 
     public void start() {
-        try (final var serverSocket = new ServerSocket(9999)) {
+        try (final var serverSocket = new ServerSocket(port)) {
             System.out.println("The server has been started");
 
             IntStream.range(0, THREADS_NUMBER)
@@ -72,7 +79,7 @@ public class Server {
     }
 
 
-    public void handle(ServerSocket serverSocket) {
+    public void handle(ServerSocket serverSocket, Request request, BufferedOutputStream bufferedOutputStream) {  //1 new arguments
         while (true) {
             try (final var socket = serverSocket.accept();
                  final var in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -122,5 +129,12 @@ public class Server {
                 throw new RuntimeException(e);
             }
         }
+    }
+    public int getPort() {
+        return port;
+    }
+
+    public void listen(int port) {
+        this.port = port;
     }
 }
