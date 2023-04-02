@@ -11,8 +11,14 @@ public class Request {
     List<String> parameters = new ArrayList<>();                                                   //1
     List<String> attributes = new ArrayList<>();                                                   //1
 
-    public Request(/*String path, */String methodType, String headers, String body) {
-//        this.path = path;
+    public Request(String methodType, String headers, String body,String path) {
+
+        this.methodType = methodType;
+        this.headers = headers;
+        this.body = body;
+        this.path = path;
+    }
+    public Request(String methodType, String headers, String body) {
         this.methodType = methodType;
         this.headers = headers;
         this.body = body;

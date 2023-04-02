@@ -6,6 +6,7 @@ import ru.netology.Homework35.httpServer.server.handlers.Handler;
 import ru.netology.Homework35.httpServer.server.Server;
 
 import java.io.BufferedOutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +20,8 @@ public class Main {
 
     public static void main(String[] args) {
         final var server = new Server();
-        // код инициализации сервера (из вашего предыдущего ДЗ)
-        server.start();
+
+
         
         String requestHeaders = "Accept: " + "text/html" + "\r\n" +
                 "Accept-encoding: " + "gzip" + "\r\n" +
@@ -28,9 +29,11 @@ public class Main {
                 "Connection: keep-alive\r\n" +
                 "\r\n";
 
-
         final var request1 = new Request("GET", requestHeaders, "");
 
+        new BufferedOutputStream()
+
+        server.start(request1, );
 
 
 
@@ -45,6 +48,13 @@ public class Main {
             public void handle(Request request, BufferedOutputStream responseStream) {
                 // TODO: handlers code
 //                responseStream.setContentType("text/html");
+                out.write(("HTTP/1.1 200 OK\r\n" +
+                        "Content-type: " + mimeType + "\r\n" +
+                        "Content-Length: " + length + "\r\n" +
+                        "Connection: close\r\n" +
+                        "\r\n").getBytes());
+                Files.copy(filePath, out);
+                out.flush();
             }
         });
 
