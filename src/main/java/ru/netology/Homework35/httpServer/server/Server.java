@@ -28,7 +28,7 @@ public class Server {
     private ConcurrentMap<String, Handler> getHandlers = new ConcurrentHashMap<>();                          //1
     private ConcurrentMap<String, Handler> postHandlers = new ConcurrentHashMap<>();                          //1
 
-    private int port = 8080;
+    private int port = 9999;
     final ExecutorService threadPool = Executors.newFixedThreadPool(64);
 
     public Server() {
@@ -109,7 +109,7 @@ public class Server {
 
                 final var requestMethod = parts[0];
                 final var path = parts[1];
-
+                //тут надо создать Request request1 и положить все что нужно
 
 
 
@@ -129,7 +129,8 @@ public class Server {
                     out.flush();
                     return;
                 }
-                
+
+
                 BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(socket.getOutputStream());
                 handler.handle(request, bufferedOutputStream);
 

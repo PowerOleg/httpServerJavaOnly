@@ -6,7 +6,9 @@ import ru.netology.Homework35.httpServer.server.handlers.Handler;
 import ru.netology.Homework35.httpServer.server.Server;
 
 import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +31,11 @@ public class Main {
                 "Connection: keep-alive\r\n" +
                 "\r\n";
 
-        final var request1 = new Request("GET", requestHeaders, "");
+        final var request1 = new Request("GET", requestHeaders, "", "/index.html"); //убрать path
 
-        new BufferedOutputStream()
 
-        server.start(request1, );
+
+
 
 
 
@@ -45,9 +47,12 @@ public class Main {
 
 
         server.addHandler("GET", "/messages", new Handler() {
-            public void handle(Request request, BufferedOutputStream responseStream) {
+            public void handle(Request request, BufferedOutputStream out) throws IOException {
                 // TODO: handlers code
-//                responseStream.setContentType("text/html");
+// переделать чтобы работать с Request а не создавать и передавать искусственный request1
+                final var filePath = Path.of(".", "public", request.getPath());
+                final var mimeType = Files.probeContentType(filePath);
+                final var length = Files.size(filePath);
                 out.write(("HTTP/1.1 200 OK\r\n" +
                         "Content-type: " + mimeType + "\r\n" +
                         "Content-Length: " + length + "\r\n" +
@@ -55,11 +60,12 @@ public class Main {
                         "\r\n").getBytes());
                 Files.copy(filePath, out);
                 out.flush();
+                //                responseStream.setContentType("text/html");
             }
         });
 
-
         server.listen(9999);
+        server.start(request1);
     }
 }
 

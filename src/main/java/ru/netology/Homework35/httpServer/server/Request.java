@@ -35,4 +35,37 @@ public class Request {
     public void read() {                                                                                //?
 
     }
+
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getMethodType() {
+        return methodType;
+    }
+
+    public String getHeaders() {
+        return headers;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public void setMethodType(String methodType) {
+        this.methodType = methodType;
+    }
+
+    public void setHeaders(String headers) {
+        this.headers = headers;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
 }
