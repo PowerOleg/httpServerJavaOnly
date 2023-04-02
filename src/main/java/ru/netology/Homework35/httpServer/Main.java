@@ -9,6 +9,10 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,33 +28,9 @@ public class Main {
         final var server = new Server();
 
 
-        
-        String requestHeaders = "Accept: " + "text/html" + "\r\n" +
-                "Accept-encoding: " + "gzip" + "\r\n" +
-                "Accept-language: " + "en-US,en;q=0.9" + "\r\n" +
-                "Connection: keep-alive\r\n" +
-                "\r\n";
-
-        final var request1 = new Request("GET", requestHeaders, "", "/index.html"); //убрать path
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         server.addHandler("GET", "/messages", new Handler() {
             public void handle(Request request, BufferedOutputStream out) throws IOException {
-                // TODO: handlers code
-// переделать чтобы работать с Request а не создавать и передавать искусственный request1
-                final var filePath = Path.of(".", "public", request.getPath());
+                final var filePath = Path.of(".", "public", "/index.html");
                 final var mimeType = Files.probeContentType(filePath);
                 final var length = Files.size(filePath);
                 out.write(("HTTP/1.1 200 OK\r\n" +
@@ -60,12 +40,31 @@ public class Main {
                         "\r\n").getBytes());
                 Files.copy(filePath, out);
                 out.flush();
-                //                responseStream.setContentType("text/html");
             }
         });
 
+        server.addHandler("POST", "/messages", new Handler() {
+            public void handle(Request request, BufferedOutputStream out) throws IOException {
+                // TODO: handlers code
+                String time = request.getBody();
+//                System.out.println((LocalDateTime.now()).format(DateTimeFormatter.ofPattern("d.MM.uuuu  HH:mm:ss")));
+
+
+                final var filePath = Path.of(".", "public", "/classic.html");
+                final var template = Files.readString(filePath);
+                final var content = template.replace("{time}", time);
+                final var mimeType = Files.probeContentType(filePath);
+                out.write(("HTTP/1.1 200 OK\r\n" +
+                            "Content-type: " + mimeType + "\r\n" +
+                            "Content-Length: " + content.length() + "\r\n" +
+                            "Connection: close\r\n" +
+                            "\r\n").getBytes());
+                out.write(content.getBytes());
+                    out.flush();
+            }
+        });
         server.listen(9999);
-        server.start(request1);
+        server.start();
     }
 }
 
@@ -81,9 +80,3 @@ public class Main {
 
 
 
-
-//        server.addHandler("POST", "/messages", new Handler() {
-//            public void handle(Request request, BufferedOutputStream responseStream) {
-//                // TODO: handlers code
-//            }
-//        });

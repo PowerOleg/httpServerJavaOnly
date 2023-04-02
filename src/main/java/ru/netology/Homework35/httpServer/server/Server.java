@@ -28,7 +28,7 @@ public class Server {
     private ConcurrentMap<String, Handler> getHandlers = new ConcurrentHashMap<>();                          //1
     private ConcurrentMap<String, Handler> postHandlers = new ConcurrentHashMap<>();                          //1
 
-    private int port = 9999;
+    private int port = 8080;
     final ExecutorService threadPool = Executors.newFixedThreadPool(64);
 
     public Server() {
@@ -75,14 +75,14 @@ public class Server {
 
 
 
-    public void start(Request request) {
+    public void start() {
         try (final var serverSocket = new ServerSocket(port)) {
             System.out.println("The server has been started");
 
             IntStream.range(0, THREADS_NUMBER)
                     .forEach(i -> {
                         Runnable task = () ->
-                                this.handle(serverSocket, request); //переделать без Request request, BufferedOutputStream bufferedOutputStream
+                                this.handle(serverSocket); //переделать без Request request, BufferedOutputStream bufferedOutputStream
                         threadPool.execute(task);
                         System.out.println("thread " + i + " run");
                     });
@@ -96,7 +96,7 @@ public class Server {
     }
 
     //1 переделать без Request request, BufferedOutputStream bufferedOutputStream
-    public void handle(ServerSocket serverSocket, Request request) {
+    public void handle(ServerSocket serverSocket) {
         while (true) {
             try (final var socket = serverSocket.accept();
                  final var in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -109,13 +109,26 @@ public class Server {
 
                 final var requestMethod = parts[0];
                 final var path = parts[1];
-                //тут надо создать Request request1 и положить все что нужно
+                String requestHeaders = "Accept: " + "text/html" + "\r\n" +
+                        "Accept-encoding: " + "gzip" + "\r\n" +
+                        "Accept-language: " + "en-US,en;q=0.9" + "\r\n" +
+                        "Connection: keep-alive\r\n" +
+                        "\r\n";
+                StringBuilder stringBuilder = new StringBuilder();
+                String body;
+                String line;
+                while ((line=in.readLine()) != null) {
+                    stringBuilder.append(line);
+                    stringBuilder.append("\n");
+                }
+                body = stringBuilder.toString();
+                System.out.println(body);
 
 
 
 
 
-
+                final var request = new Request(requestMethod, requestHeaders, in.toString(), path);   //body!!!!!!!
 
 
 
@@ -129,33 +142,7 @@ public class Server {
                     out.flush();
                     return;
                 }
-
-
-                BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(socket.getOutputStream());
-                handler.handle(request, bufferedOutputStream);
-
-
-
-
-
-
-//                final var filePath = Path.of(".", "public", path);
-//                final var mimeType = Files.probeContentType(filePath);
-//                final var length = Files.size(filePath);
-////пример как своими руками сделать шаблонизатор
-//                if (path.equals("/classic.html")) {
-//                    final var template = Files.readString(filePath);
-//                    final var content = template.replace("{time}", LocalTime.now().toString());
-//                    out.write(("HTTP/1.1 200 OK\r\n" +
-//                            "Content-type: " + mimeType + "\r\n" +
-//                            "Content-Length: " + content.length() + "\r\n" +
-//                            "Connection: close\r\n" +
-//                            "\r\n").getBytes());
-//                    out.write(content.getBytes());
-//                    out.flush();
-//                    return;
-//                }
-
+                handler.handle(request, out);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
