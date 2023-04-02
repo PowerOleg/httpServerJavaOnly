@@ -29,7 +29,7 @@ public class Main {
                 "\r\n";
 
 
-        final var request1 = new Request("GET", requestHeaders, "Hello World");
+        final var request1 = new Request("GET", requestHeaders, "");
 
 
 
@@ -40,27 +40,34 @@ public class Main {
 
 
 
-//         добавление хендлеров (обработчиков)
-        //                BufferedOutputStream берётся путём заворачивания OutputStream socket:
-//                new BufferedOutputStream(socket.getOutputStream()).
+
         server.addHandler("GET", "/messages", new Handler() {
             public void handle(Request request, BufferedOutputStream responseStream) {
                 // TODO: handlers code
-//                Connection connection = (Connection) request.getServletContext().getAttribute("dbConnection");
-
-//                ?????????request.read();
-
-//                response.setContentType("text/html");
-//                responseStream.write("a\r\n");
-//                responseStream.flush();
+//                responseStream.setContentType("text/html");
             }
         });
-        server.addHandler("POST", "/messages", new Handler() {
-            public void handle(Request request, BufferedOutputStream responseStream) {
-                // TODO: handlers code
-            }
-        });
+
 
         server.listen(9999);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        server.addHandler("POST", "/messages", new Handler() {
+//            public void handle(Request request, BufferedOutputStream responseStream) {
+//                // TODO: handlers code
+//            }
+//        });

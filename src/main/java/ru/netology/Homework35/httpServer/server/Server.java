@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -21,25 +22,41 @@ import java.util.stream.IntStream;
 import static ru.netology.Homework35.httpServer.Main.THREADS_NUMBER;
 
 public class Server {
-    ConcurrentMap<String, String> requestMethodType = new ConcurrentHashMap<>();                    //1
-    ConcurrentMap<String, String> requestPath = new ConcurrentHashMap<>();                          //1
-    int port = 8080;
-    final List<String> validPaths;                                                                  //d
+//    private ConcurrentMap<String, String> requestMethodType = new ConcurrentHashMap<>();                    //d
+//    private List<String> validPaths = new ArrayList<>();                                                       //d
+//    private ConcurrentMap<String, Object> validPaths = new ConcurrentHashMap<>();                          //d
+    private ConcurrentMap<String, Handler> getHandlers = new ConcurrentHashMap<>();                          //1
+    private ConcurrentMap<String, Handler> postHandlers = new ConcurrentHashMap<>();                          //1
+
+    private int port = 8080;
     final ExecutorService threadPool = Executors.newFixedThreadPool(64);
 
-    public Server(List<String> validPaths) {
-        this.validPaths = validPaths;
-    }                       //d
-
-
-
-    public void addHandler(String requestMethod, String uri, Handler handler) {                    //1
-
+    public Server() {
     }
 
-    public String findHandler() {                                                                      //1
 
-        return "Not Found 404";
+
+    public boolean addHandler(String requestMethod, String path, Handler handler) {                    //0
+        if (requestMethod.equalsIgnoreCase("get")) {
+            getHandlers.put(path, handler);
+            return true;
+        }
+        if (requestMethod.equalsIgnoreCase("post")) {
+            postHandlers.put(path, handler);
+            return true;
+        }
+        return false;
+    }
+
+    public Handler findHandler(String requestMethod, String path) {
+        Handler handler = null;
+        if (requestMethod.equalsIgnoreCase("get")) {
+            handler = getHandlers.get(path);
+        }
+        if (requestMethod.equalsIgnoreCase("post")) {
+            handler = postHandlers.get(path);
+        }
+        return handler;
     }
 
 
@@ -79,18 +96,49 @@ public class Server {
     }
 
 
-    public void handle(ServerSocket serverSocket, Request request, BufferedOutputStream bufferedOutputStream) {  //1 new arguments
+    public void handle(ServerSocket serverSocket/*, Request request, BufferedOutputStream bufferedOutputStream*/) {  //1 new arguments
         while (true) {
             try (final var socket = serverSocket.accept();
                  final var in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                  final var out = new BufferedOutputStream(socket.getOutputStream())) {
+
+
+
                 final var requestLine = in.readLine();
                 final var parts = requestLine.split(" ");
                 if (parts.length != 3) {
                     return;
                 }
 
+                final var requestMethod = parts[0];
                 final var path = parts[1];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                findHandler(requestMethod, path);
+
                 if (!validPaths.contains(path)) {
                     out.write((
                             "HTTP/1.1 404 Not Found\r\n+" +
