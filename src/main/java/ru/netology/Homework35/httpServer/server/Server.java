@@ -97,7 +97,7 @@ public class Server {
                     int bodyStart = requestToParse.indexOf("{");
                     int bodyEnd = requestToParse.indexOf("}");
                     requestHeaders = requestToParse.substring(0, bodyStart);
-                    body = requestToParse.substring(bodyStart, bodyEnd + 1);
+                    body = requestToParse.substring(bodyStart+1, bodyEnd);
                     System.out.println("A client sent the body: " + body);
                 }
 

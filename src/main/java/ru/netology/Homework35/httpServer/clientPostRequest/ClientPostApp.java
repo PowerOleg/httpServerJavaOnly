@@ -24,8 +24,8 @@ public class ClientPostApp {
         try {
             //body
             Map<String, String> postArgs = new HashMap<>();
-            postArgs.put("user", "Bob");
-            postArgs.put("password", "123");
+            postArgs.put("time", "0:00");
+            postArgs.put("day", "2023-04-03");
 
             byte[] out = postArgs.toString().getBytes();
 
