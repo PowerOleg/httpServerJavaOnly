@@ -16,12 +16,10 @@ import java.util.stream.IntStream;
 import static ru.netology.Homework35.httpServer.Main.THREADS_NUMBER;
 
 public class Server {
-    private final ConcurrentMap<String, Handler> getHandlers = new ConcurrentHashMap<>();                          //1
+    final ExecutorService threadPool = Executors.newFixedThreadPool(64);
+    private final ConcurrentMap<String, Handler> getHandlers = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Handler> postHandlers = new ConcurrentHashMap<>();
     private int port = 8080;
-    final ExecutorService threadPool = Executors.newFixedThreadPool(64);
-
-
 
     public boolean addHandler(String requestMethod, String path, Handler handler) {
         if (requestMethod.equalsIgnoreCase("get")) {
@@ -45,7 +43,6 @@ public class Server {
         }
         return handler;
     }
-
 
     public void start() {
         try (final var serverSocket = new ServerSocket(port)) {
@@ -80,21 +77,30 @@ public class Server {
                 }
                 final var requestMethod = parts[0];
                 final var path = parts[1];
+                System.out.println("The client request: " + requestMethod + " " + path);
+
 
                 String body = null;
                 String requestHeaders = null;
-//                String line;
-//                final var stringBuilder = new StringBuilder();
-//                while ((line=in.readLine()) != null) {
-//                    stringBuilder.append(line);
-//                    stringBuilder.append("\n");
-//                }
-//                var requestToParse = stringBuilder.toString();
-//                int bodyStart = requestToParse.indexOf("\n\n");
-//                String requestHeaders = requestToParse.substring(0, bodyStart);
-//                if (requestMethod.equalsIgnoreCase("post")) {
-//                    body = requestToParse.substring(bodyStart+2, requestToParse.length());
-//                }
+                String line;
+                final var stringBuilder = new StringBuffer();
+                while (in.ready()) {
+                    line = in.readLine();
+                    stringBuilder.append(line);
+                }
+
+                if (requestMethod.equalsIgnoreCase("get")) {
+                    requestHeaders = stringBuilder.toString();
+                }
+                if (requestMethod.equalsIgnoreCase("post")) {
+                    var requestToParse = stringBuilder.toString();
+                    int bodyStart = requestToParse.indexOf("{");
+                    int bodyEnd = requestToParse.indexOf("}");
+                    requestHeaders = requestToParse.substring(0, bodyStart);
+                    body = requestToParse.substring(bodyStart, bodyEnd + 1);
+                    System.out.println("A client sent the body: " + body);
+                }
+
                 final var request = new Request(requestMethod, requestHeaders, body, path);
                 var handler = findHandler(requestMethod, path);
                 if (handler == null) {
@@ -104,6 +110,7 @@ public class Server {
                                     "Connection: close\r\n" +
                                     "\r\n").getBytes());
                     out.flush();
+                    System.out.println("A handler is not found");
                     return;
                 }
                 handler.handle(request, out);
@@ -112,6 +119,7 @@ public class Server {
             }
         }
     }
+
     public int getPort() {
         return port;
     }
