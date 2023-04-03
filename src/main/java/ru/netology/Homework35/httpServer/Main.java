@@ -11,10 +11,12 @@ import java.nio.file.Path;
 
 public class Main {
     public static final int THREADS_NUMBER = 64;
+    public static final String GET = "GET";
+    public static final String POST = "POST";
 
     public static void main(String[] args) {
         final var server = new Server();
-        server.addHandler("GET", "/messages", new Handler() {
+        server.addHandler(GET, "/messages", new Handler() {
             public void handle(Request request, BufferedOutputStream out) throws IOException {
                 final var filePath = Path.of(".", "public", "/index.html");
                 final var mimeType = Files.probeContentType(filePath);
@@ -30,7 +32,7 @@ public class Main {
             }
         });
 
-        server.addHandler("POST", "/messages", new Handler() {
+        server.addHandler(POST, "/messages", new Handler() {
             public void handle(Request request, BufferedOutputStream out) throws IOException {
                 String body = request.getBody();
                 final var filePath = Path.of(".", "public", "/classic.html");

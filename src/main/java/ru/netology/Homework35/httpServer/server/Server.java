@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
 
-import static ru.netology.Homework35.httpServer.Main.THREADS_NUMBER;
+import static ru.netology.Homework35.httpServer.Main.*;
 
 public class Server {
     final ExecutorService threadPool = Executors.newFixedThreadPool(64);
@@ -22,11 +22,11 @@ public class Server {
     private int port = 8080;
 
     public boolean addHandler(String requestMethod, String path, Handler handler) {
-        if (requestMethod.equalsIgnoreCase("get")) {
+        if (requestMethod.equals(GET)) {
             getHandlers.put(path, handler);
             return true;
         }
-        if (requestMethod.equalsIgnoreCase("post")) {
+        if (requestMethod.equals(POST)) {
             postHandlers.put(path, handler);
             return true;
         }
@@ -35,10 +35,10 @@ public class Server {
 
     public Handler findHandler(String requestMethod, String path) {
         Handler handler = null;
-        if (requestMethod.equalsIgnoreCase("get")) {
+        if (requestMethod.equals(GET)) {
             handler = getHandlers.get(path);
         }
-        if (requestMethod.equalsIgnoreCase("post")) {
+        if (requestMethod.equals(POST)) {
             handler = postHandlers.get(path);
         }
         return handler;
@@ -89,10 +89,10 @@ public class Server {
                     stringBuilder.append(line);
                 }
 
-                if (requestMethod.equalsIgnoreCase("get")) {
+                if (requestMethod.equals(GET)) {
                     requestHeaders = stringBuilder.toString();
                 }
-                if (requestMethod.equalsIgnoreCase("post")) {
+                if (requestMethod.equals(POST)) {
                     var requestToParse = stringBuilder.toString();
                     int bodyStart = requestToParse.indexOf("{");
                     int bodyEnd = requestToParse.indexOf("}");
