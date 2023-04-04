@@ -1,31 +1,51 @@
 package ru.netology.Homework35.httpServer.server;
 
+import ru.netology.Homework35.httpServer.server.handlers.Handler;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
 
-import static ru.netology.Homework35.httpServer.Main.THREADS_NUMBER;
+import static ru.netology.Homework35.httpServer.Main.*;
 
 public class Server {
-    final List<String> validPaths;
     final ExecutorService threadPool = Executors.newFixedThreadPool(64);
+    private final ConcurrentMap<String, Handler> getHandlers = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Handler> postHandlers = new ConcurrentHashMap<>();
+    private int port = 8080;
 
-    public Server(List<String> validPaths) {
-        this.validPaths = validPaths;
+    public boolean addHandler(String requestMethod, String path, Handler handler) {
+        if (requestMethod.equals(GET)) {
+            getHandlers.put(path, handler);
+            return true;
+        }
+        if (requestMethod.equals(POST)) {
+            postHandlers.put(path, handler);
+            return true;
+        }
+        return false;
+    }
+
+    public Handler findHandler(String requestMethod, String path) {
+        Handler handler = null;
+        if (requestMethod.equals(GET)) {
+            handler = getHandlers.get(path);
+        }
+        if (requestMethod.equals(POST)) {
+            handler = postHandlers.get(path);
+        }
+        return handler;
     }
 
     public void start() {
-        try (final var serverSocket = new ServerSocket(9999)) {
+        try (final var serverSocket = new ServerSocket(port)) {
             System.out.println("The server has been started");
 
             IntStream.range(0, THREADS_NUMBER)
@@ -44,7 +64,6 @@ public class Server {
         }
     }
 
-
     public void handle(ServerSocket serverSocket) {
         while (true) {
             try (final var socket = serverSocket.accept();
@@ -53,47 +72,59 @@ public class Server {
                 final var requestLine = in.readLine();
                 final var parts = requestLine.split(" ");
                 if (parts.length != 3) {
+                    System.out.println("A wrong request");
                     return;
                 }
-
+                final var requestMethod = parts[0];
                 final var path = parts[1];
-                if (!validPaths.contains(path)) {
+                System.out.println("The client request: " + requestMethod + " " + path);
+
+
+                String body = null;
+                String requestHeaders = null;
+                String line;
+                final var stringBuilder = new StringBuffer();
+                while (in.ready()) {
+                    line = in.readLine();
+                    stringBuilder.append(line);
+                }
+
+                if (requestMethod.equals(GET)) {
+                    requestHeaders = stringBuilder.toString();
+                }
+                if (requestMethod.equals(POST)) {
+                    var requestToParse = stringBuilder.toString();
+                    int bodyStart = requestToParse.indexOf("{");
+                    int bodyEnd = requestToParse.indexOf("}");
+                    requestHeaders = requestToParse.substring(0, bodyStart);
+                    body = requestToParse.substring(bodyStart+1, bodyEnd);
+                    System.out.println("A client sent the body: " + body);
+                }
+
+                final var request = new Request(requestMethod, requestHeaders, body, path);
+                var handler = findHandler(requestMethod, path);
+                if (handler == null) {
                     out.write((
                             "HTTP/1.1 404 Not Found\r\n+" +
                                     "Content-Length: 0\r\n" +
                                     "Connection: close\r\n" +
                                     "\r\n").getBytes());
                     out.flush();
+                    System.out.println("A handler is not found");
                     return;
                 }
-
-                final var filePath = Path.of(".", "public", path);
-                final var mimeType = Files.probeContentType(filePath);
-                final var length = Files.size(filePath);
-//пример как своими руками сделать шаблонизатор
-                if (path.equals("/classic.html")) {
-                    final var template = Files.readString(filePath);
-                    final var content = template.replace("{time}", LocalTime.now().toString());
-                    out.write(("HTTP/1.1 200 OK\r\n" +
-                            "Content-type: " + mimeType + "\r\n" +
-                            "Content-Length: " + content.length() + "\r\n" +
-                            "Connection: close\r\n" +
-                            "\r\n").getBytes());
-                    out.write(content.getBytes());
-                    out.flush();
-                    return;
-                }
-
-                out.write(("HTTP/1.1 200 OK\r\n" +
-                        "Content-type: " + mimeType + "\r\n" +
-                        "Content-Length: " + length + "\r\n" +
-                        "Connection: close\r\n" +
-                        "\r\n").getBytes());
-                Files.copy(filePath, out);
-                out.flush();
+                handler.handle(request, out);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void listen(int port) {
+        this.port = port;
     }
 }
