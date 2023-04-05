@@ -61,7 +61,7 @@ public class ClientPostApp {
 
             }
             System.out.println(stringBuilder.toString().length());
-            System.out.println(stringBuilder.substring(300, 345));
+            System.out.println(stringBuilder.substring(0, 345));
 
         } catch (MalformedURLException e) {
             e.printStackTrace();

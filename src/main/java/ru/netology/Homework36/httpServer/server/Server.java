@@ -71,8 +71,6 @@ public class Server {
                  final var in = new BufferedInputStream(socket.getInputStream());
                  final var out = new BufferedOutputStream(socket.getOutputStream())) {
 
-
-
                 final var limit = 4096;
                 in.mark(limit);
                 final var buffer = new byte[limit];
@@ -108,6 +106,11 @@ public class Server {
                     return;
                 }
 
+                //получаем путь без параметров
+
+
+
+
                 //получаем заголовки из Request
                 final byte[] headersDelimiter = new byte[]{'\r', '\n', '\r', '\n'};
                 final int headersStart = requestLineEnd + requestLineDelimiter.length;
@@ -137,6 +140,8 @@ public class Server {
                         System.out.println("Client's body: " + body);
                     }
                 }
+
+
                 final var request = new Request(method, headers.toString(), body, path);
                 var handler = findHandler(method, path);
 
@@ -147,72 +152,6 @@ public class Server {
                 }
 
 
-
-
-
-
-
-
-//                final var requestLine = in.readAllBytes();
-
-//                final var parts = requestLine.split(" ");
-
-//                final var requestMethod = parts[0];
-//                final var pathWithQuery = parts[1];
-//                System.out.println("The client request: " + requestMethod + " " + pathWithQuery);
-
-
-
-
-                //тут нужно очистить path от параметров, и распарсить чтобы были параметры отдельно и передать их в Request
-//                http://localhost:9999/messages?name=Kolya
-//                String path = pathWithQuery;
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//                String body = null;
-//                String requestHeaders = null;
-//                String line;
-//                final var stringBuilder = new StringBuffer();
-//                while (in.ready()) {
-//                    line = in.readLine();
-//                    stringBuilder.append(line);
-//                }
-//
-//                if (requestMethod.equals(GET)) {
-//                    requestHeaders = stringBuilder.toString();
-//                }
-//                if (requestMethod.equals(POST)) {
-//                    var requestToParse = stringBuilder.toString();
-//                    int bodyStart = requestToParse.indexOf("{");
-//                    int bodyEnd = requestToParse.indexOf("}");
-//                    requestHeaders = requestToParse.substring(0, bodyStart);
-//                    body = requestToParse.substring(bodyStart+1, bodyEnd);
-//                    System.out.println("A client sent the body: " + body);
-//                }
-//
-//
-//
-//
-//
-//
-//                final var request = new Request(requestMethod, requestHeaders, body, path);
-//                var handler = findHandler(requestMethod, path);
-
-
-
-
-
-//                handler.handle(request, out);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
