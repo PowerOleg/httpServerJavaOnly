@@ -80,7 +80,7 @@ public class Server {
 
                 final byte[] requestLineDelimiter = new byte[]{'\r', '\n'};
 
-                final int requestLineEnd = indexOf(buffer, requestLineDelimiter, 0, read);                          //надо пройтись debug с F7
+                final int requestLineEnd = indexOf(buffer, requestLineDelimiter, 0, read);
                 if(requestLineEnd == -1) {
                     badRequest(out);
                     return;
@@ -124,7 +124,7 @@ public class Server {
                 in.skip(headersStart);
                 final byte[] headersBytes = in.readNBytes(headersEnd - headersStart);
                 final List<String> headers = Arrays.asList(new String(headersBytes).split("\r\n"));
-                System.out.println(headers);
+                System.out.println("Client's headers: " + headers);
 
                 String body = null;
                 if (!method.equals(GET)) {
@@ -136,19 +136,14 @@ public class Server {
                         body = new String(bodyBytes);
                         System.out.println("Client's body: " + body);
                     }
-
-                    final var request = new Request(method, headers.toString(), body, path);
+                }
+                final var request = new Request(method, headers.toString(), body, path);
                 var handler = findHandler(method, path);
 
-
-
-
-
-                handler.handle(request, out);
-
-
-
-
+                try {
+                    handler.handle(request, out);
+                } catch (NullPointerException e) {
+                    System.out.println("There is no handler for this request: " + request.getPath());
                 }
 
 
