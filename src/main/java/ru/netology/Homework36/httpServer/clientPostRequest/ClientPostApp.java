@@ -1,4 +1,4 @@
-package ru.netology.Homework35.httpServer.clientPostRequest;
+package ru.netology.Homework36.httpServer.clientPostRequest;
 
 import java.io.BufferedReader;
 import java.io.IOException;

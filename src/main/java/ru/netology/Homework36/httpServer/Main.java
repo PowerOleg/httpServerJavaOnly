@@ -1,14 +1,20 @@
-package ru.netology.Homework35.httpServer;
+package ru.netology.Homework36.httpServer;
 
-import ru.netology.Homework35.httpServer.server.Request;
-import ru.netology.Homework35.httpServer.server.Server;
-import ru.netology.Homework35.httpServer.server.handlers.Handler;
+import ru.netology.Homework36.httpServer.server.Request;
+import ru.netology.Homework36.httpServer.server.Server;
+import ru.netology.Homework36.httpServer.server.handlers.Handler;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
+import org.apache.http.HttpHeaders;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.HttpClientBuilder;
 public class Main {
     public static final int THREADS_NUMBER = 64;
     public static final String GET = "GET";

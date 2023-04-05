@@ -1,13 +1,16 @@
-package ru.netology.Homework35.httpServer.server;
+package ru.netology.Homework36.httpServer.server;
+
+import java.util.List;
 
 public class Request {
     private String path;
     private String methodType;
     private String headers;
     private String body;
-
+//  ЗАДАЧА! 1 из объекта типа Request нужно отдельно получать и путь запроса, и параметры из Query String.
+    // 2 доработайте функциональность поиска хендлера так, чтобы учитывался только путь без Query,
+// т. е. хендлер, зарегистрированный на "/messages", обрабатывал и запросы "/messages?last=10".
     public Request(String methodType, String headers, String body,String path) {
-
         this.methodType = methodType;
         this.headers = headers;
         this.body = body;
@@ -18,6 +21,21 @@ public class Request {
         this.headers = headers;
         this.body = body;
     }
+
+
+//    public List<String> getQueryParam(String name) {                                                                 //1
+//
+//    }
+//
+//    public List<String> getQueryParams() {                                                                           //1
+//
+//    }
+
+
+
+
+
+
 
     public String getPath() {
         return path;

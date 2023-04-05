@@ -1,6 +1,6 @@
-package ru.netology.Homework35.httpServer.server.handlers;
+package ru.netology.Homework36.httpServer.server.handlers;
 
-import ru.netology.Homework35.httpServer.server.Request;
+import ru.netology.Homework36.httpServer.server.Request;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
