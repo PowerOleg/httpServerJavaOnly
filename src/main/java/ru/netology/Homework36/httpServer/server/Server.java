@@ -1,10 +1,15 @@
 package ru.netology.Homework36.httpServer.server;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 import ru.netology.Homework36.httpServer.server.handlers.Handler;
 
 import java.io.*;
 import java.net.ServerSocket;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -99,15 +104,20 @@ public class Server {
                 }
 
                 //получаем путь с параметрами из Request Line
-                final var path = requestLine[1];
+                var path = requestLine[1];
                 if (!path.startsWith("/")) {
                     badRequest(out);
                     System.out.println("A wrong path");
                     return;
                 }
 
+                List<NameValuePair> paramsList = Collections.emptyList();
                 //получаем путь без параметров
-
+                if (path.contains("?")) {
+                    paramsList = URLEncodedUtils.parse(path, StandardCharsets.UTF_8);
+                    path = path.substring(0, path.indexOf("?"));
+                    System.out.println("path: " + path);
+                }
 
 
 
@@ -142,7 +152,7 @@ public class Server {
                 }
 
 
-                final var request = new Request(method, headers.toString(), body, path);
+                final var request = new Request(method, headers.toString(), body, path, paramsList);
                 var handler = findHandler(method, path);
 
                 try {
