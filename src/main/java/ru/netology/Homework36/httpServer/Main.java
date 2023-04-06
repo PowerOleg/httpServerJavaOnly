@@ -24,6 +24,9 @@ public class Main {
         final var server = new Server();
         server.addHandler(GET, "/messages", new Handler() {
             public void handle(Request request, BufferedOutputStream out) throws IOException {
+                System.out.println("All" + request.getQueryParams());
+                System.out.println("query paramName \"id\" " + request.getQueryParam("id"));
+
                 final var filePath = Path.of(".", "public", "/index.html");
                 final var mimeType = Files.probeContentType(filePath);
                 final var length = Files.size(filePath);

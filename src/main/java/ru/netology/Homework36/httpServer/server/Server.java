@@ -4,9 +4,10 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import ru.netology.Homework36.httpServer.server.handlers.Handler;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,6 +27,19 @@ public class Server {
     private final ConcurrentMap<String, Handler> getHandlers = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Handler> postHandlers = new ConcurrentHashMap<>();
     private int port = 8080;
+
+    private static int indexOf(byte[] array, byte[] target, int start, int max) {
+        outer:
+        for (int i = start; i < max - target.length + 1; i++) {
+            for (int j = 0; j < target.length; j++) {
+                if (array[i + j] != target[j]) {
+                    continue outer;
+                }
+            }
+            return i;
+        }
+        return -1;
+    }
 
     public boolean addHandler(String requestMethod, String path, Handler handler) {
         if (requestMethod.equals(GET)) {
@@ -84,7 +98,7 @@ public class Server {
                 final byte[] requestLineDelimiter = new byte[]{'\r', '\n'};
 
                 final int requestLineEnd = indexOf(buffer, requestLineDelimiter, 0, read);
-                if(requestLineEnd == -1) {
+                if (requestLineEnd == -1) {
                     badRequest(out);
                     return;
                 }
@@ -111,14 +125,16 @@ public class Server {
                     return;
                 }
 
-                List<NameValuePair> paramsList = Collections.emptyList();
+                List<NameValuePair> paramList = Collections.emptyList();
                 //получаем путь без параметров
                 if (path.contains("?")) {
-                    paramsList = URLEncodedUtils.parse(path, StandardCharsets.UTF_8);
-                    path = path.substring(0, path.indexOf("?"));
+                    String[] newPath = path.split("\\?");
+//                            path.substring(0, path.indexOf("?"));
+                    paramList = URLEncodedUtils.parse(newPath[1], StandardCharsets.UTF_8);
+                    path = newPath[0];
                     System.out.println("path: " + path);
+                    System.out.println("path: " + paramList);
                 }
-
 
 
                 //получаем заголовки из Request
@@ -126,7 +142,7 @@ public class Server {
                 final int headersStart = requestLineEnd + requestLineDelimiter.length;
                 final int headersEnd = indexOf(buffer, headersDelimiter, headersStart, read);
 
-                if (headersEnd ==-1) {
+                if (headersEnd == -1) {
                     badRequest(out);
                     System.out.println("Something wrong with headersEnd");
                     return;
@@ -152,7 +168,7 @@ public class Server {
                 }
 
 
-                final var request = new Request(method, headers.toString(), body, path, paramsList);
+                final var request = new Request(method, headers.toString(), body, path, paramList);
                 var handler = findHandler(method, path);
 
                 try {
@@ -195,17 +211,5 @@ public class Server {
 
     public void listen(int port) {
         this.port = port;
-    }
-    private static int indexOf(byte[] array, byte[] target, int start, int max) {
-        outer:
-        for (int i = start; i < max - target.length + 1; i++) {
-            for (int j = 0; j < target.length; j++) {
-                if (array[i + j] != target[j]) {
-                    continue outer;
-                }
-            }
-            return i;
-        }
-        return -1;
     }
 }
