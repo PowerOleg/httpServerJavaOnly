@@ -125,8 +125,8 @@ public class Server {
                     return;
                 }
 
-                List<NameValuePair> paramList = Collections.emptyList();
                 //получаем путь без параметров
+                List<NameValuePair> paramList = Collections.emptyList();
                 if (path.contains("?")) {
                     String[] newPath = path.split("\\?");
 //                            path.substring(0, path.indexOf("?"));
@@ -155,15 +155,21 @@ public class Server {
                 final List<String> headers = Arrays.asList(new String(headersBytes).split("\r\n"));
                 System.out.println("Client's headers: " + headers);
 
+
                 String body = null;
                 if (!method.equals(GET)) {
-                    in.skip(headersDelimiter.length); //тело находится после заголовков, => пропускаем \r\n\r\n
-                    final var contentLength = extractHeader(headers, "Content-Length");
-                    if (contentLength.isPresent()) {
-                        final var length = Integer.parseInt(contentLength.get());
-                        final byte[] bodyBytes = in.readNBytes(length);
-                        body = new String(bodyBytes);
-                        System.out.println("Client's body: " + body);
+                    final var contentType = extractHeader(headers, "Content-Type");
+                    if (contentType.isPresent()) {
+                        if (contentType.get().equals(URLEncodedUtils.CONTENT_TYPE)) {
+                            in.skip(headersDelimiter.length); //тело находится после заголовков, => пропускаем \r\n\r\n
+                            final var contentLength = extractHeader(headers, "Content-Length");
+                            if (contentLength.isPresent()) {
+                                final var length = Integer.parseInt(contentLength.get());
+                                final byte[] bodyBytes = in.readNBytes(length);
+                                body = new String(bodyBytes);
+                                System.out.println("Client's body: " + body);
+                            }
+                        }
                     }
                 }
 

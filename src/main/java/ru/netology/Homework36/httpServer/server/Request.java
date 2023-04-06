@@ -1,7 +1,9 @@
 package ru.netology.Homework36.httpServer.server;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,13 +13,7 @@ public class Request {
     private String methodType;
     private String headers;
     private String body;
-
-    public Request(String methodType, String headers, String body, String path) {
-        this.methodType = methodType;
-        this.headers = headers;
-        this.body = body;
-        this.path = path;
-    }
+    private List<NameValuePair> queryBodyParams;
 
     public Request(String methodType, String headers, String body, String path, List<NameValuePair> paramsList) {
         this.path = path;
@@ -25,6 +21,20 @@ public class Request {
         this.headers = headers;
         this.body = body;
         this.paramsList = paramsList;
+        this.queryBodyParams = URLEncodedUtils.parse(body, StandardCharsets.UTF_8);
+    }
+
+    public List<String> getPostParam(String name) {
+        return queryBodyParams.stream().filter(n -> n.getName().equalsIgnoreCase(name))
+                .map(NameValuePair::getValue).collect(Collectors.toList());
+    }
+
+    public List<String> getPostParams() {
+        return queryBodyParams.stream().map(n -> {
+            String param = n.getName();
+            String value = n.getValue();
+            return new String(param + "=" + value);
+        }).collect(Collectors.toList());
     }
 
     public List<String> getQueryParam(String name) {
@@ -39,7 +49,6 @@ public class Request {
             return new String(param + "=" + value);
         }).collect(Collectors.toList());
     }
-
 
     public String getPath() {
         return path;

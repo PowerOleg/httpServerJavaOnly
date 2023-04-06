@@ -8,13 +8,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.HttpClientBuilder;
+
 public class Main {
     public static final int THREADS_NUMBER = 64;
     public static final String GET = "GET";
@@ -38,6 +32,21 @@ public class Main {
                 Files.copy(filePath, out);
                 System.out.println("The server response's file: " + filePath.getFileName());
                 out.flush();
+            }
+        });
+
+        server.addHandler(POST, "/", new Handler() {
+            public void handle(Request request, BufferedOutputStream out) throws IOException {
+                var postParams = request.getPostParams();
+                out.write(("HTTP/1.1 200 OK\r\n" +
+                        "Content-type: " + "text/html" + "\r\n" +
+                        "Content-Length: " + postParams.toString().length() + "\r\n" +
+                        "Connection: close\r\n" +
+                        "\r\n").getBytes());
+                out.write(postParams.toString().getBytes());
+                out.flush();
+                System.out.println("All values from form:" + postParams);
+                System.out.println("The value of the form named title: " + request.getPostParam("title"));
             }
         });
 
