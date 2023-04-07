@@ -10,9 +10,18 @@ import java.util.stream.Collectors;
 public class Request {
     private String path;
     private String methodType;
+
+    public List<NameValuePair> getParamsList() {
+        return paramsList;
+    }
+
+    public List<NameValuePair> getQueryBodyParams() {
+        return queryBodyParams;
+    }
+
     private String headers;
     private String body;
-    List<NameValuePair> paramsList;
+    private List<NameValuePair> paramsList;
     private List<NameValuePair> queryBodyParams;
 
     public Request(String methodType, String headers, String body, String path, String queryFromPath) {
