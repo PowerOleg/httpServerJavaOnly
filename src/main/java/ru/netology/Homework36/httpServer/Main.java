@@ -45,7 +45,7 @@ public class Main {
                         "\r\n").getBytes());
                 out.write(postParams.toString().getBytes());
                 out.flush();
-                System.out.println("All values from form:" + postParams);
+                System.out.println("All values from the form:" + postParams);
                 System.out.println("The value of the form named title: " + request.getPostParam("title"));
             }
         });

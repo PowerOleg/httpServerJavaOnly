@@ -8,20 +8,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Request {
-    List<NameValuePair> paramsList;
     private String path;
     private String methodType;
     private String headers;
     private String body;
+    List<NameValuePair> paramsList;
     private List<NameValuePair> queryBodyParams;
 
-    public Request(String methodType, String headers, String body, String path, List<NameValuePair> paramsList) {
+    public Request(String methodType, String headers, String body, String path, String queryFromPath) {
         this.path = path;
         this.methodType = methodType;
         this.headers = headers;
         this.body = body;
-        this.paramsList = paramsList;
-        this.queryBodyParams = URLEncodedUtils.parse(body, StandardCharsets.UTF_8);
+        this.paramsList = parseQuery(queryFromPath);
+        this.queryBodyParams = parseQuery(body);
+    }
+
+    private List<NameValuePair> parseQuery(String query) {
+        return URLEncodedUtils.parse(query, StandardCharsets.UTF_8);
     }
 
     public List<String> getPostParam(String name) {
