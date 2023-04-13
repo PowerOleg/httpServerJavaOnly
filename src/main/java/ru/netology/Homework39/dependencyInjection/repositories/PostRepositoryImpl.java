@@ -1,6 +1,7 @@
 package ru.netology.Homework39.dependencyInjection.repositories;
 
 
+
 import org.springframework.stereotype.Repository;
 import ru.netology.Homework39.dependencyInjection.exception.NotFoundException;
 import ru.netology.Homework39.dependencyInjection.models.Post;

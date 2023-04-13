@@ -4,6 +4,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import ru.netology.Homework39.dependencyInjection.controllers.PostController;
 import ru.netology.Homework39.dependencyInjection.exception.NotFoundException;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class MainServlet extends HttpServlet {
