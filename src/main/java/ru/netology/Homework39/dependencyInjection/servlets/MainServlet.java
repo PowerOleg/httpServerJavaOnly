@@ -10,8 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class MainServlet extends HttpServlet {
-    PostController postController;
-    public static final String API_POSTS = "/api/posts";
+    private PostController postController;
+//    public static final String API_POSTS = "/api/posts";
+    public static final String API_POSTS = "/posts";
     public static final String API_POSTS_D = "/api/posts/\\d+";
     public static final String STR = "/";
     public static final String GET_METHOD = "GET";

@@ -46,6 +46,5 @@ public class PostController {
         response.setContentType(APPLICATION_JSON);
         service.removeById(id);
         response.setStatus(HttpServletResponse.SC_OK);
-
     }
 }
