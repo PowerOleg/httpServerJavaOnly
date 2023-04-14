@@ -29,12 +29,8 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     public Post save(Post post) {
-        if(post.getId() != 0) {
-            if (!posts.containsKey(post.getId())) {
-                throw new NotFoundException();
-            } else {
-                posts.put(post.getId(), post);
-            }
+        if (post.getId() != 0) {
+            posts.put(post.getId(), post);
         }
 
         if (post.getId() == 0) {

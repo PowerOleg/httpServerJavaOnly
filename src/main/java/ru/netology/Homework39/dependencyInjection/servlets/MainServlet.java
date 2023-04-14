@@ -4,16 +4,17 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import ru.netology.Homework39.dependencyInjection.controllers.PostController;
 import ru.netology.Homework39.dependencyInjection.exception.NotFoundException;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@WebServlet(name = "mainServlet", value = "/")
 public class MainServlet extends HttpServlet {
     private PostController postController;
-//    public static final String API_POSTS = "/api/posts";
-    public static final String API_POSTS = "/posts";
-    public static final String API_POSTS_D = "/api/posts/\\d+";
+    public static final String API_POSTS = "/api/posts";
+    public static final String API_POSTS_SAVE = "/api/posts/\\d+";
     public static final String STR = "/";
     public static final String GET_METHOD = "GET";
     public static final String POST_METHOD = "POST";
@@ -35,7 +36,7 @@ public class MainServlet extends HttpServlet {
                 postController.all(response);
                 return;
             }
-            if (method.equals(GET_METHOD) && path.matches(API_POSTS_D)) {
+            if (method.equals(GET_METHOD) && path.matches(API_POSTS_SAVE)) {
                 final var id = Long.parseLong(path.substring(path.lastIndexOf(STR) + 1));
                 postController.getById(id, response);
                 return;
@@ -43,7 +44,7 @@ public class MainServlet extends HttpServlet {
             if (method.equals(POST_METHOD) && path.equals(API_POSTS)) {
                 postController.save(req.getReader(), response);
             }
-            if (method.equals(DELETE_METHOD) && path.matches(API_POSTS_D)) {
+            if (method.equals(DELETE_METHOD) && path.matches(API_POSTS_SAVE)) {
                 final var id = Long.parseLong(path.substring(path.lastIndexOf(STR) + 1));
                 postController.removeById(id, response);
             }
