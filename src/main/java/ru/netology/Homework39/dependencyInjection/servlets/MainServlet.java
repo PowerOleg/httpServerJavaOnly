@@ -1,6 +1,7 @@
 package ru.netology.Homework39.dependencyInjection.servlets;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.netology.Homework39.dependencyInjection.configurations.Config;
 import ru.netology.Homework39.dependencyInjection.controllers.PostController;
 import ru.netology.Homework39.dependencyInjection.exception.NotFoundException;
 
@@ -12,18 +13,18 @@ import java.io.IOException;
 
 @WebServlet(name = "mainServlet", value = "/")
 public class MainServlet extends HttpServlet {
-    private PostController postController;
     public static final String API_POSTS = "/api/posts";
     public static final String API_POSTS_SAVE = "/api/posts/\\d+";
     public static final String STR = "/";
     public static final String GET_METHOD = "GET";
     public static final String POST_METHOD = "POST";
     public static final String DELETE_METHOD = "DELETE";
+    private PostController postController;
 
     @Override
     public void init() {
-        final var context = new AnnotationConfigApplicationContext("ru.netology");
-        postController = context.getBean(PostController.class);
+        final var ctx = new AnnotationConfigApplicationContext(Config.class);
+        postController = ctx.getBean("postController", PostController.class);
     }
 
     @Override

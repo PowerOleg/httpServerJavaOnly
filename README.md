@@ -1,4 +1,4 @@
 # Переход от Web EE к Spring
 
-### MainServlet создает бин используя dependency injection..
+### Принцип Java Config. Т.е. создан класс Config, который управляет созданием бинов и зависимостями.
 Используется плагин Smart Tomcat установленный в settings. Также скачен Tomcat 8.5.86.

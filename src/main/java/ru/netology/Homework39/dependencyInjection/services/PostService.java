@@ -1,15 +1,11 @@
 package ru.netology.Homework39.dependencyInjection.services;
 
-
-
-import org.springframework.stereotype.Service;
 import ru.netology.Homework39.dependencyInjection.exception.NotFoundException;
 import ru.netology.Homework39.dependencyInjection.models.Post;
 import ru.netology.Homework39.dependencyInjection.repositories.PostRepository;
 
 import java.util.List;
 
-@Service
 public class PostService {
     private final PostRepository repository;
 

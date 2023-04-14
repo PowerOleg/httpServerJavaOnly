@@ -1,23 +1,20 @@
 package ru.netology.Homework39.dependencyInjection.repositories;
 
-
-
-import org.springframework.stereotype.Repository;
 import ru.netology.Homework39.dependencyInjection.exception.NotFoundException;
 import ru.netology.Homework39.dependencyInjection.models.Post;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Repository
 public class PostRepositoryImpl implements PostRepository {
     private final ConcurrentHashMap<Long, Post> posts;
     private final AtomicLong idCounter = new AtomicLong(0L);
 
-    public PostRepositoryImpl()  {
-        posts  = new ConcurrentHashMap<>();
+    public PostRepositoryImpl() {
+        posts = new ConcurrentHashMap<>();
     }
 
     public List<Post> all() {
