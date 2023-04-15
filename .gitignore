@@ -1,14 +1,7 @@
 target/
-.mvn/wrapper/maven-wrapper.jar
-**/src/main/**/target/
-**/src/test/**/target/
-HELP.md
-.mvn
-mvnw
-mvnw.cmd
-Homework35Application.java
-
-
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
 
 # Gradle
 .idea/**/gradle.xml
