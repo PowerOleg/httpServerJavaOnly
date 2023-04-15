@@ -7,19 +7,19 @@ import ru.netology.Homework39.dependencyInjection.repositories.PostRepository;
 import ru.netology.Homework39.dependencyInjection.repositories.PostRepositoryImpl;
 import ru.netology.Homework39.dependencyInjection.services.PostService;
 
-@Configuration
+//@Configuration
 public class Config {
-    @Bean
+//    @Bean
     public PostController postController(PostService service) {
         return new PostController(service);
     }
 
-    @Bean
+//    @Bean
     public PostService postService(PostRepository repository) {
         return new PostService(repository);
     }
 
-    @Bean
+//    @Bean
     public PostRepository postRepository() {
         return new PostRepositoryImpl();
     }
