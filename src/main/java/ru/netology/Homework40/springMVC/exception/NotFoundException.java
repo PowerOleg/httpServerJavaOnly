@@ -1,4 +1,4 @@
-package ru.netology.Homework39.dependencyInjection.exception;
+package ru.netology.Homework40.springMVC.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

@@ -1,8 +1,8 @@
-package ru.netology.Homework39.dependencyInjection.repositories;
+package ru.netology.Homework40.springMVC.repositories;
 
 import org.springframework.stereotype.Repository;
-import ru.netology.Homework39.dependencyInjection.exception.NotFoundException;
-import ru.netology.Homework39.dependencyInjection.models.Post;
+import ru.netology.Homework40.springMVC.exception.NotFoundException;
+import ru.netology.Homework40.springMVC.models.Post;
 
 import java.util.ArrayList;
 import java.util.List;

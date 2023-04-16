@@ -1,5 +1,7 @@
-package ru.netology.Homework39.dependencyInjection.configurations;
+package ru.netology.Homework40.springMVC.configurations;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
@@ -10,7 +12,8 @@ public class WebConfig {
     @Bean
     public RequestMappingHandlerAdapter requestMappingHandlerAdapter() {
         final var bean = new RequestMappingHandlerAdapter();
-        bean.getMessageConverters().add(new GsonHttpMessageConverter());
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+        bean.getMessageConverters().add(new GsonHttpMessageConverter(gson));
         return bean;
     }
 }

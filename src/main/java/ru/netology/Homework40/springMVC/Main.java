@@ -1,4 +1,4 @@
-package ru.netology.Homework39.dependencyInjection;
+package ru.netology.Homework40.springMVC;
 
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.connector.Connector;

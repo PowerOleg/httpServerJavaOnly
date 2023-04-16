@@ -1,7 +1,7 @@
-package ru.netology.Homework39.dependencyInjection.repositories;
+package ru.netology.Homework40.springMVC.repositories;
 
 
-import ru.netology.Homework39.dependencyInjection.models.Post;
+import ru.netology.Homework40.springMVC.models.Post;
 
 import java.util.List;
 import java.util.Optional;

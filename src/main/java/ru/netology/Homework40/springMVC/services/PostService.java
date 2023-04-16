@@ -1,9 +1,9 @@
-package ru.netology.Homework39.dependencyInjection.services;
+package ru.netology.Homework40.springMVC.services;
 
 import org.springframework.stereotype.Service;
-import ru.netology.Homework39.dependencyInjection.exception.NotFoundException;
-import ru.netology.Homework39.dependencyInjection.models.Post;
-import ru.netology.Homework39.dependencyInjection.repositories.PostRepository;
+import ru.netology.Homework40.springMVC.exception.NotFoundException;
+import ru.netology.Homework40.springMVC.models.Post;
+import ru.netology.Homework40.springMVC.repositories.PostRepository;
 
 import java.util.List;
 @Service
