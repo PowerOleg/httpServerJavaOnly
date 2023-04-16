@@ -1,4 +1,4 @@
-package ru.netology.Homework39.dependencyInjection.tomcat;
+package ru.netology.Homework39.dependencyInjection;
 
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.connector.Connector;
