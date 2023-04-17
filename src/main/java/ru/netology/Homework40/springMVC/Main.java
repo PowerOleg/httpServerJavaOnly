@@ -1,4 +1,4 @@
-package ru.netology.Homework39.dependencyInjection;
+package ru.netology.Homework40.springMVC;
 
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.connector.Connector;
@@ -17,7 +17,6 @@ public class Main {
         final var connector = new Connector();
         connector.setPort(8080);
         tomcat.setConnector(connector);
-
         tomcat.getHost().setAppBase(".");
         tomcat.addWebapp("", ".");
 

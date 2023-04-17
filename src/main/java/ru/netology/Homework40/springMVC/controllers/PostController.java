@@ -1,12 +1,12 @@
-package ru.netology.Homework39.dependencyInjection.controllers;
+package ru.netology.Homework40.springMVC.controllers;
 
-import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.*;
-import ru.netology.Homework39.dependencyInjection.models.Post;
-import ru.netology.Homework39.dependencyInjection.services.PostService;
+import ru.netology.Homework40.springMVC.models.Post;
+import ru.netology.Homework40.springMVC.services.PostService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/posts")

@@ -1,4 +1,4 @@
-package ru.netology.Homework39.dependencyInjection;
+package ru.netology.Homework40.springMVC;
 
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
