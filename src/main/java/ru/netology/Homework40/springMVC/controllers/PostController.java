@@ -6,6 +6,7 @@ import ru.netology.Homework40.springMVC.services.PostService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -18,12 +19,14 @@ public class PostController {
 
     @GetMapping
     public List<Post> all() throws IOException {
-
-        return service.all();
+        return service.all().stream().filter(n -> !n.isRemoved()).collect(Collectors.toList());
     }
 
     @GetMapping("/{id:[\\d]+}")
     public Post getById(@PathVariable long id) throws IOException {
+        if (service.getById(id).isRemoved()) {
+            return null;
+        }
         return service.getById(id);
     }
 

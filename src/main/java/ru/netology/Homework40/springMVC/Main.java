@@ -17,7 +17,6 @@ public class Main {
         final var connector = new Connector();
         connector.setPort(8080);
         tomcat.setConnector(connector);
-
         tomcat.getHost().setAppBase(".");
         tomcat.addWebapp("", ".");
 
