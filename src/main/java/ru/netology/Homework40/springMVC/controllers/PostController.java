@@ -19,14 +19,11 @@ public class PostController {
 
     @GetMapping
     public List<Post> all() throws IOException {
-        return service.all().stream().filter(n -> !n.isRemoved()).collect(Collectors.toList());
+        return service.all();
     }
 
     @GetMapping("/{id:[\\d]+}")
     public Post getById(@PathVariable long id) throws IOException {
-        if (service.getById(id).isRemoved()) {
-            return null;
-        }
         return service.getById(id);
     }
 
@@ -37,8 +34,6 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     public void removeById(@PathVariable long id) {
-        final Post post = service.getById(id);
-        post.setRemoved(true);
-        service.save(post);
+        service.removeById(id);
     }
 }
