@@ -1,5 +1,5 @@
-# Собираем Spring с нуля
-Для запуска spring(не Spring Boot), помимо обычного написания контроллеров, сервисов, репозиториев необходимо:
-<li>Main запускает встраиваемый Tomcat</li>
-<li>Регистрация DispatcherServlet в классе SpringApplicationInitializer, который implements WebApplicationInitializer</li>
-<li>Класс WebConfig для создания MessageConverter(), чтобы spring понял как конвертировать данные в тело View</li>
+# Низкоуровневый HttpServer на Java
+### Тест формы, атрибут encrypt: application/x-www-form-urlencoded (по умолчанию)
+Реализована функция добавления различных URI для маппинга как в spring web только на языке Java для запросов GET & POST(обработка данных посланных из
+
+). (Обработка GET запросов как с параметрами так и без) Для тестирования работы и обработки формы используется файл static/testForm.html(Необходимо открывать встроенным браузером Intellij Idea).
